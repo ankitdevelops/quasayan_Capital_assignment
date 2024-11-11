@@ -1,0 +1,51 @@
+{% extends "base.html" %} {% block content %}
+{% load static %}
+<div
+  class="modal fade"
+  id="question-modal"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="staticBackdropLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h2 id="questionText" class="text-xl font-semibold mb-4"></h2>
+        <div id="answerOptions" class="space-y-4"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="prevQuestion" class="btn btn-secondary">Previous</button>
+        <button id="nextQuestion" class="btn btn-primary">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<form id="questionnaireForm" class="space-y-6">
+  {% csrf_token %} {% for question in questions %}
+  <div class="question-container d-none" data-question-id="{{ question.id }}">
+    <h3 class="text-lg font-semibold mb-3">{{ question.text }}</h3>
+    <div class="space-y-2">
+      {% for answer in question.answers.all %}
+      <div
+        class="flex items-center list-group list-group-item list-group-item-action rounded-1 my-1 border-1 fs-5"
+      >
+        <input
+          type="radio"
+          name="{{ question.id }}"
+          value="{{ answer.id }}"
+          id="answer_{{ answer.id }}"
+          class="mr-3"
+        />
+        <label for="answer_{{ answer.id }}">{{ answer.text }}</label>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+</form>
+{% endblock content %} {% block script %}
+<script src="{% static 'js/script.js' %}"></script>
+{% endblock script %}
